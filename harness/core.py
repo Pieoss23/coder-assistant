@@ -352,7 +352,22 @@ def load_config() -> dict[str, Any]:
     path = STATE / "config.json"
     if not path.exists():
         return {"default_provider": "openrouter", "providers": {}}
-    return json.loads(path.read_text(encoding="utf-8"))
+    config = json.loads(path.read_text(encoding="utf-8"))
+    local_path = STATE / "config.local.json"
+    if local_path.exists():
+        local = json.loads(local_path.read_text(encoding="utf-8"))
+        config = merge_config(config, local)
+    return config
+
+
+def merge_config(base: dict[str, Any], override: dict[str, Any]) -> dict[str, Any]:
+    result = dict(base)
+    for key, value in override.items():
+        if isinstance(value, dict) and isinstance(result.get(key), dict):
+            result[key] = merge_config(result[key], value)
+        else:
+            result[key] = value
+    return result
 
 
 def read_context() -> str:

@@ -26,7 +26,7 @@
       "prompt_via_stdin": true
     },
     "codex": {
-      "command": "C:\\Users\\ssoptr\\.vscode\\extensions\\openai.chatgpt-26.901.22334-win32-x64\\bin\\windows-x86_64\\codex.exe",
+      "command": "codex",
       "args": ["exec", "--skip-git-repo-check", "--approve-for-me", "--json", "{prompt}"],
       "json_events": true
     },

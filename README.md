@@ -122,6 +122,8 @@ Configurare le chiavi solamente in `.env`, mai in `config.json`:
 OPENROUTER_API_KEY=...
 ```
 
+È disponibile un modello in [`.env.example`](.env.example). Per impostazioni dipendenti dalla macchina usare `.coding-harness/config.local.json`, ignorato da Git; il file [`config.local.json.example`](.coding-harness/config.local.json.example) mostra la struttura.
+
 ## Creare ed eseguire un task
 
 Creare il piano:
@@ -273,6 +275,8 @@ try { .\.venv\Scripts\python.exe -m unittest discover -s tests -v }
 finally { Pop-Location }
 ```
 
+La stessa verifica viene eseguita automaticamente da GitHub Actions su push e pull request.
+
 ## Esempio incluso
 
 `examples/flask-login` contiene un’app Flask dimostrativa con registrazione, login, logout, sessioni, password hashate, pagine informative, portfolio, splash screen e test automatici.
@@ -321,6 +325,8 @@ Prima di proporre modifiche:
 5. aggiornare memoria, decisioni o limiti quando necessario.
 
 Le modifiche che ampliano il perimetro del task devono essere esplicite e approvate.
+
+La procedura completa è in [`CONTRIBUTING.md`](CONTRIBUTING.md). Per problemi di sicurezza consultare [`SECURITY.md`](SECURITY.md).
 
 ## Licenza
 
