@@ -82,6 +82,16 @@ Il manifest descrive il perimetro del task:
 
 Il manifest distingue i file leggibili, modificabili e creabili. È una barriera di policy e viene verificato contro il diff finale. La sandbox preventiva a livello di sistema operativo, con isolamento filesystem/processi/rete, è ancora una funzionalità futura.
 
+È disponibile anche la preparazione esplicita di un Git worktree isolato:
+
+```powershell
+python -m harness.cli workspace create tasks/<task>
+python -m harness.cli workspace status tasks/<task>
+python -m harness.cli workspace remove tasks/<task>
+```
+
+Il worktree è una copia Git separata e reversibile; questa prima versione non lo attiva automaticamente per i task esistenti. Il collegamento alla pipeline e l’integrazione controllata nel branch principale sono il passaggio successivo.
+
 ### Provider
 
 Gli adapter possono utilizzare:

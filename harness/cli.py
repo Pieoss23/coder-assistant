@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 from .core import ROOT, STATE, TASKS, add_subtask, approve_manifest, approve_plan, build_prompt, create_plan, dispatch_queue, init, propose_manifest, queue_status, recover_ownership, run_parallel, run_pipeline, run_subtask, run_task, save_chat_output, start_task
 from .inventory import write_inventory
+from .workspace import create_worktree, remove_worktree, workspace_status
 
 
 def main() -> None:
@@ -14,6 +15,10 @@ def main() -> None:
     man = sub.add_parser("manifest"); ms = man.add_subparsers(dest="action", required=True)
     mp = ms.add_parser("propose"); mp.add_argument("task", type=Path)
     ma = ms.add_parser("approve"); ma.add_argument("task", type=Path)
+    ws = sub.add_parser("workspace"); wss = ws.add_subparsers(dest="action", required=True)
+    wsc = wss.add_parser("create"); wsc.add_argument("task", type=Path); wsc.add_argument("--ref", default="HEAD")
+    wsr = wss.add_parser("remove"); wsr.add_argument("task", type=Path); wsr.add_argument("--force", action="store_true")
+    wsshow = wss.add_parser("status"); wsshow.add_argument("task", type=Path)
     p = sub.add_parser("plan"); ps = p.add_subparsers(dest="action", required=True)
     c = ps.add_parser("create"); c.add_argument("title")
     a = ps.add_parser("approve"); a.add_argument("file", type=Path)
@@ -39,6 +44,9 @@ def main() -> None:
         print(json.dumps({"json": str(json_path), "markdown": str(markdown_path)}, indent=2))
     elif args.command == "manifest" and args.action == "propose": print(propose_manifest(args.task))
     elif args.command == "manifest" and args.action == "approve": print(f"Approvato: {approve_manifest(args.task)}")
+    elif args.command == "workspace" and args.action == "create": print(create_worktree(ROOT, args.task, STATE, args.ref))
+    elif args.command == "workspace" and args.action == "remove": remove_worktree(ROOT, args.task, STATE, args.force); print("Worktree rimosso")
+    elif args.command == "workspace" and args.action == "status": print(json.dumps(workspace_status(args.task), indent=2))
     elif args.command == "plan" and args.action == "create": print(create_plan(args.title))
     elif args.command == "plan" and args.action == "approve": print(f"Approvato: {approve_plan(args.file)}")
     elif args.command == "task" and args.action == "start": print(start_task(args.plan, args.title, args.provider, args.test_command, args.working_directory))

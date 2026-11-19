@@ -4,3 +4,4 @@ __pycache__/
 .venv/
 .env
 .coding-harness/inventory/
+.coding-harness/worktrees/

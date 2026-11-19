@@ -1,9 +1,11 @@
 import tempfile
 import unittest
+import subprocess
 from unittest.mock import patch
 
 import harness.core as core
 from harness.inventory import build_inventory
+from harness.workspace import create_worktree, remove_worktree, workspace_status
 
 
 class HarnessTests(unittest.TestCase):
@@ -200,6 +202,25 @@ class HarnessTests(unittest.TestCase):
             self.assertEqual(manifest["read"], ["app.py"])
             self.assertEqual(manifest["write"], ["app.py"])
             self.assertEqual(manifest["create"], ["templates/new.html"])
+
+  def test_git_worktree_lifecycle_is_isolated_and_reversible(self):
+    with tempfile.TemporaryDirectory() as directory:
+        root = __import__("pathlib").Path(directory)
+        subprocess.run(["git", "init", "-q"], cwd=root, check=True)
+        subprocess.run(["git", "config", "user.email", "test@example.com"], cwd=root, check=True)
+        subprocess.run(["git", "config", "user.name", "Harness Test"], cwd=root, check=True)
+        (root / "app.py").write_text("print('base')", encoding="utf-8")
+        subprocess.run(["git", "add", "app.py"], cwd=root, check=True)
+        subprocess.run(["git", "commit", "-qm", "base"], cwd=root, check=True)
+        task = root / "tasks" / "demo"; task.mkdir(parents=True)
+        state = root / ".coding-harness"; state.mkdir()
+        worktree = create_worktree(root, task, state)
+        self.assertTrue((worktree / "app.py").exists())
+        self.assertEqual(workspace_status(task)["mode"], "git-worktree")
+        (worktree / "app.py").write_text("print('isolated')", encoding="utf-8")
+        self.assertEqual((root / "app.py").read_text(encoding="utf-8"), "print('base')")
+        remove_worktree(root, task, state, force=True)
+        self.assertFalse(worktree.exists())
 
 
 if __name__ == "__main__":
