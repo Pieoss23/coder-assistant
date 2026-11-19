@@ -1,0 +1,5 @@
+{"at": "2026-08-25T08:41:24.543762+00:00", "kind": "task_created", "plan": ".coding-harness\\plans\\20260825-104113-login-flask-in-ambiente-virtuale.md"}
+{"at": "2026-08-25T08:43:19.776843+00:00", "kind": "tests_completed", "status": "passed", "command": "cd /d examples\\flask-login && .venv\\Scripts\\python.exe -m unittest discover -s tests -v", "returncode": 0}
+{"at": "2026-08-25T08:43:27.711414+00:00", "kind": "execution_started", "provider": "openrouter"}
+{"at": "2026-08-25T08:44:33.063433+00:00", "kind": "tests_completed", "status": "passed", "command": "cd /d examples\\flask-login && .venv\\Scripts\\python.exe -m unittest discover -s tests -v", "returncode": 0}
+{"at": "2026-08-25T08:44:33.064144+00:00", "kind": "execution_completed", "provider": "openrouter"}

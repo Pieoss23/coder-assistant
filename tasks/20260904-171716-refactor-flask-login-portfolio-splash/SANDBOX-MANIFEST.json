@@ -1,0 +1,72 @@
+{
+  "schema": "coding-harness.sandbox-manifest.v1",
+  "status": "draft",
+  "task": "tasks\\20260904-171716-refactor-flask-login-portfolio-splash",
+  "plan_sha256": "9450f76a7380db8f3b41cdeb6d6b1f12096c8f7a2b22e119a4ab15bfe9bc403d",
+  "complexity": {
+    "level": "C1",
+    "workflow": "single-agent"
+  },
+  "inventory_generated_at": "2026-11-17T10:20:25.486421+01:00",
+  "read": [
+    "examples/flask-login/app.py",
+    "examples/flask-login/static/*",
+    "examples/flask-login/static/auth.js",
+    "examples/flask-login/static/splash.js",
+    "examples/flask-login/static/styles.css",
+    "examples/flask-login/templates/*",
+    "examples/flask-login/templates/about.html",
+    "examples/flask-login/templates/auth_form.html",
+    "examples/flask-login/templates/base.html",
+    "examples/flask-login/templates/contact.html",
+    "examples/flask-login/templates/dashboard.html",
+    "examples/flask-login/templates/index.html",
+    "examples/flask-login/templates/login.html",
+    "examples/flask-login/templates/navbar.html",
+    "examples/flask-login/templates/portfolio.html",
+    "examples/flask-login/templates/register.html",
+    "examples/flask-login/templates/splash.html",
+    "examples/flask-login/tests/*",
+    "examples/flask-login/tests/test_app.py"
+  ],
+  "write": [
+    "examples/flask-login/app.py",
+    "examples/flask-login/static/*",
+    "examples/flask-login/static/auth.js",
+    "examples/flask-login/static/splash.js",
+    "examples/flask-login/static/styles.css",
+    "examples/flask-login/templates/*",
+    "examples/flask-login/templates/about.html",
+    "examples/flask-login/templates/auth_form.html",
+    "examples/flask-login/templates/base.html",
+    "examples/flask-login/templates/contact.html",
+    "examples/flask-login/templates/dashboard.html",
+    "examples/flask-login/templates/index.html",
+    "examples/flask-login/templates/login.html",
+    "examples/flask-login/templates/navbar.html",
+    "examples/flask-login/templates/portfolio.html",
+    "examples/flask-login/templates/register.html",
+    "examples/flask-login/templates/splash.html",
+    "examples/flask-login/tests/*",
+    "examples/flask-login/tests/test_app.py"
+  ],
+  "create": [],
+  "deny": [
+    ".env",
+    "*/.env",
+    ".coding-harness/*",
+    "instance/*",
+    "*.sqlite3"
+  ],
+  "sensitive": [
+    ".env",
+    "examples/flask-login/.env"
+  ],
+  "commands": [
+    ".\\examples\\flask-login\\.venv\\Scripts\\python.exe -m unittest discover -s examples/flask-login/tests -v"
+  ],
+  "network": false,
+  "notes": [
+    "Bozza generata deterministicamente dall'inventory e dal piano. Verificare e approvare prima dell'esecuzione."
+  ]
+}

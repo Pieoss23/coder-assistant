@@ -1,0 +1,17 @@
+{
+  "status": "failed",
+  "session_id": "sess-20260904163904-726458455d",
+  "provider": "codex",
+  "role": "developer",
+  "identity": "Developer del Coding Harness",
+  "permission": "modify",
+  "workspace_root": "C:\\Progetti\\SVILUPPO\\coder-assistant",
+  "destination": "C:\\Progetti\\SVILUPPO\\coder-assistant",
+  "paths": ["*"],
+  "test_command": "cd /d examples\\flask-login && .venv\\Scripts\\python.exe -m unittest discover -s tests -v",
+  "plan_sha256": "79f095bcea222a6f49867f661792f220802b076dde9fc4ecbbcda54a5bd471f2",
+  "created_at": "2026-09-04T16:39:04.648311+02:00",
+  "started_at": "2026-09-04T16:41:12.690917+02:00",
+  "error": "Streaming interrotto durante il test dell’eco del prompt; il processo è stato terminato.",
+  "failed_at": "2026-09-04T16:42:00+02:00"
+}

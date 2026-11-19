@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Caricamento — Flask Login Demo{% endblock %}
+{% block content %}
+<section class="splash" data-splash aria-label="Caricamento applicazione">
+  <div class="loader" aria-hidden="true"></div>
+  <p class="eyebrow">Flask Login Demo</p>
+  <h1>Prepariamo il tuo spazio.</h1>
+  <p>Un momento, stiamo caricando la home.</p>
+  <a class="skip-link" href="{{ url_for('home') }}">Vai direttamente alla home</a>
+</section>
+<script src="{{ url_for('static', filename='splash.js') }}" defer></script>
+{% endblock %}

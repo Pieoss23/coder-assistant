@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="card">
+  <p class="eyebrow">Stato: autenticato</p>
+  <h1>Dashboard privata</h1>
+  <p>Hai effettuato l'accesso correttamente.</p>
+  <form method="post" action="{{ url_for('logout') }}" data-auth-form>
+    <button type="submit" class="button-secondary" data-submit-label="Disconnessione in corso…">Esci</button>
+  </form>
+</section>
+{% endblock %}

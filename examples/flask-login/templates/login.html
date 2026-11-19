@@ -1,0 +1,6 @@
+{% extends "auth_form.html" %}
+{% block title %}Accedi — Flask Login Demo{% endblock %}
+{% block form_title %}Accedi{% endblock %}
+{% block submit_label %}Accesso in corso…{% endblock %}
+{% block submit_text %}Accedi{% endblock %}
+{% block form_footer %}<p class="form-hint">Non hai un account? <a href="{{ url_for('register') }}">Registrati</a>.</p>{% endblock %}

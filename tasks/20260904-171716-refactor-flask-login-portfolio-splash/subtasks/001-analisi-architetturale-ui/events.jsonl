@@ -1,0 +1,2 @@
+{"at": "2026-09-04T17:18:02.756843+02:00", "kind": "error_recorded", "fingerprint": "84ecaa8437d33e7e", "phase": "tests-failed", "error_type": "RuntimeError"}
+{"at": "2026-09-04T17:18:02.758744+02:00", "kind": "tests_completed", "status": "failed", "command": ".\\examples\\flask-login\\.venv\\Scripts\\python.exe -m unittest discover -s examples/flask-login/tests -v", "terminal": "powershell", "returncode": 1}

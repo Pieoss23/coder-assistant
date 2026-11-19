@@ -1,0 +1,10 @@
+<nav class="site-nav" aria-label="Navigazione principale">
+  <a class="nav-link{% if request.endpoint in ('index', 'home') %} active{% endif %}"
+     href="{{ url_for('home') }}"{% if request.endpoint in ('index', 'home') %} aria-current="page"{% endif %}>Home</a>
+  <a class="nav-link{% if request.endpoint == 'about' %} active{% endif %}"
+     href="{{ url_for('about') }}"{% if request.endpoint == 'about' %} aria-current="page"{% endif %}>About</a>
+  <a class="nav-link{% if request.endpoint == 'contact' %} active{% endif %}"
+     href="{{ url_for('contact') }}"{% if request.endpoint == 'contact' %} aria-current="page"{% endif %}>Contact</a>
+  <a class="nav-link{% if request.endpoint == 'portfolio' %} active{% endif %}"
+     href="{{ url_for('portfolio') }}"{% if request.endpoint == 'portfolio' %} aria-current="page"{% endif %}>Portfolio</a>
+</nav>

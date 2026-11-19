@@ -1,0 +1,7 @@
+{"at": "2026-08-25T07:50:47.384878+00:00", "kind": "task_created", "plan": ".coding-harness\\plans\\20260825-094803-smoke-test-openrouter-free.md"}
+{"at": "2026-08-25T07:50:52.425240+00:00", "kind": "execution_started", "provider": "openrouter"}
+{"at": "2026-08-25T07:50:59.845992+00:00", "kind": "execution_completed", "provider": "openrouter"}
+{"at": "2026-08-25T08:17:05.515122+00:00", "kind": "execution_started", "provider": "openrouter"}
+{"at": "2026-08-25T08:17:47.915675+00:00", "kind": "execution_completed", "provider": "openrouter"}
+{"at": "2026-08-25T08:30:11.474054+00:00", "kind": "subtask_created", "subtask": "tasks\\20260825-095047-smoke-test-openrouter-free\\subtasks\\001-verifica-report-test"}
+{"at": "2026-08-25T08:30:18.063385+00:00", "kind": "tests_completed", "status": "passed", "command": "python -m unittest discover -s tests -v", "returncode": 0}

@@ -1,0 +1,18 @@
+{
+  "status": "running",
+  "session_id": "sess-20260904171724-a6b85138f0",
+  "parent": "C:\\Progetti\\SVILUPPO\\coder-assistant\\tasks\\20260904-171716-refactor-flask-login-portfolio-splash",
+  "role": "tester-reviewer",
+  "identity": "Tester-reviewer del Coding Harness",
+  "permission": "both",
+  "provider": "openrouter",
+  "workspace_root": "C:\\Progetti\\SVILUPPO\\coder-assistant",
+  "destination": "C:\\Progetti\\SVILUPPO\\coder-assistant",
+  "paths": [
+    "examples/flask-login/*"
+  ],
+  "test_command": ".\\examples\\flask-login\\.venv\\Scripts\\python.exe -m unittest discover -s examples/flask-login/tests -v",
+  "created_at": "2026-09-04T17:17:24.720526+02:00",
+  "priority": 0,
+  "depends_on": []
+}

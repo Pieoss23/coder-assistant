@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="card card-narrow">
+  <p class="eyebrow">Account</p>
+  <h1>{% block form_title %}{% endblock %}</h1>
+  <form method="post" data-auth-form>
+    <label for="email">Email</label>
+    <input id="email" name="email" type="email" autocomplete="email" required>
+    <label for="password">Password</label>
+    <input id="password" name="password" type="password" autocomplete="current-password" required>
+    <button type="submit" data-submit-label="{% block submit_label %}{% endblock %}">{% block submit_text %}{% endblock %}</button>
+  </form>
+  {% block form_footer %}{% endblock %}
+</section>
+{% endblock %}

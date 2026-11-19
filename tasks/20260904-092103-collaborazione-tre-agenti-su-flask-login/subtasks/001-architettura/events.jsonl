@@ -1,0 +1,1 @@
+{"at": "2026-09-04T07:21:57.310105+00:00", "kind": "tests_completed", "status": "passed", "command": "cd /d examples\\flask-login && .venv\\Scripts\\python.exe -m unittest discover -s tests -v", "returncode": 0}

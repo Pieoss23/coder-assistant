@@ -1,0 +1,4 @@
+{"at": "2026-09-04T07:21:03.333152+00:00", "kind": "task_created", "plan": ".coding-harness\\plans\\20260904-092049-collaborazione-tre-agenti-su-flask-login.md"}
+{"at": "2026-09-04T07:21:10.941764+00:00", "kind": "subtask_created", "subtask": "tasks\\20260904-092103-collaborazione-tre-agenti-su-flask-login\\subtasks\\001-architettura"}
+{"at": "2026-09-04T07:21:11.317129+00:00", "kind": "subtask_created", "subtask": "tasks\\20260904-092103-collaborazione-tre-agenti-su-flask-login\\subtasks\\002-implementazione"}
+{"at": "2026-09-04T07:21:11.707908+00:00", "kind": "subtask_created", "subtask": "tasks\\20260904-092103-collaborazione-tre-agenti-su-flask-login\\subtasks\\003-verifica"}

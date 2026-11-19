@@ -1,0 +1,6 @@
+{"at": "2026-09-04T16:30:16.051137+02:00", "kind": "task_created", "plan": "C:\\Progetti\\SVILUPPO\\coder-assistant\\.coding-harness\\plans\\20260904-155513-aggiunta-nella-navbar-della-home-home-about-e-cont.md", "identity": "Developer del Coding Harness", "permission": "modify"}
+{"at": "2026-09-04T16:30:18.660876+02:00", "kind": "execution_started", "provider": "codex"}
+{"at": "2026-09-04T16:31:28.149628+02:00", "kind": "tests_completed", "status": "passed", "command": "Push-Location examples/flask-login; .venv/Scripts/python.exe -m unittest discover -s tests -v; Pop-Location", "returncode": 0}
+{"at": "2026-09-04T16:31:28.149628+02:00", "kind": "task_completed", "status": "completed", "implementation_preexisting": true, "decision": "Nessuna nuova decisione architetturale; validata la navbar condivisa già presente."}
+{"at": "2026-09-04T16:33:22.301880+02:00", "kind": "tests_completed", "status": "passed", "command": "cd /d examples\\flask-login && .venv\\Scripts\\python.exe -m unittest discover -s tests -v", "returncode": 0}
+{"at": "2026-09-04T16:33:22.303549+02:00", "kind": "execution_completed", "provider": "codex"}

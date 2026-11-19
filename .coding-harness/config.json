@@ -1,0 +1,37 @@
+{
+  "default_provider": "openrouter",
+  "project_name": "Coding Harness",
+  "timezone": "Europe/Rome",
+  "ownership_ttl_seconds": 3600,
+  "terminal": {
+    "platform": "windows",
+    "shell": "powershell",
+    "test_commands_are_shell_strings": true
+  },
+  "test_command": "python -m unittest discover -s tests -v",
+  "agents": {
+    "architect": {"identity": "Architect del Coding Harness", "permission": "read-only"},
+    "developer": {"identity": "Developer del Coding Harness", "permission": "modify"},
+    "implementer": {"identity": "Implementer del Coding Harness", "permission": "modify"},
+    "tester-reviewer": {"identity": "Tester-reviewer del Coding Harness", "permission": "both"}
+  },
+  "providers": {
+    "openrouter": {
+      "model": "openrouter/free",
+      "api_key_env": "OPENROUTER_API_KEY"
+    },
+    "claude": {
+      "command": "claude.cmd",
+      "args": ["-p"],
+      "prompt_via_stdin": true
+    },
+    "codex": {
+      "command": "C:\\Users\\ssoptr\\.vscode\\extensions\\openai.chatgpt-26.901.22334-win32-x64\\bin\\windows-x86_64\\codex.exe",
+      "args": ["exec", "--skip-git-repo-check", "--approve-for-me", "--json", "{prompt}"],
+      "json_events": true
+    },
+    "copilot": {
+      "command": "copilot"
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "status": "completed",
+  "parent": "tasks\\20260904-092103-collaborazione-tre-agenti-su-flask-login",
+  "role": "tester-reviewer",
+  "provider": "claude",
+  "test_command": "cd /d examples\\flask-login && .venv\\Scripts\\python.exe -m unittest discover -s tests -v",
+  "created_at": "2026-09-04T07:21:11.706586+00:00",
+  "error": "La riga di comando \u00e8 troppo lunga.",
+  "failed_at": "2026-09-04T07:28:34.771691+00:00",
+  "tests": {
+    "status": "passed",
+    "command": "cd /d examples\\flask-login && .venv\\Scripts\\python.exe -m unittest discover -s tests -v",
+    "returncode": 0
+  },
+  "completed_at": "2026-09-04T07:30:28.852917+00:00"
+}

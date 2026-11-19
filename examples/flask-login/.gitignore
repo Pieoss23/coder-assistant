@@ -1,0 +1,6 @@
+.venv/
+.env
+instance/*.sqlite3
+__pycache__/
+tests/__pycache__/
+.test-tmp/

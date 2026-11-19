@@ -1,0 +1,7 @@
+{
+  "status": "created",
+  "provider": "openrouter",
+  "test_command": "cd /d examples\\flask-login && .venv\\Scripts\\python.exe -m unittest discover -s tests -v",
+  "plan_sha256": "85237e35aeeac9af9a0aaab03a50528ba25a8587cbdcf6a0bb3469d0050af117",
+  "created_at": "2026-09-04T07:21:03.332136+00:00"
+}

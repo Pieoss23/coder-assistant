@@ -1,0 +1,338 @@
+{
+  "schema": "coding-harness.inventory.v1",
+  "generated_at": "2026-11-17T09:40:45.164050+01:00",
+  "root": "C:\\Progetti\\SVILUPPO\\coder-assistant",
+  "file_count": 30,
+  "extensions": {
+    ".css": 1,
+    ".example": 1,
+    ".html": 11,
+    ".js": 2,
+    ".md": 2,
+    ".py": 7,
+    ".toml": 1,
+    ".txt": 1,
+    "[none]": 4
+  },
+  "files": [
+    {
+      "path": ".env",
+      "type": "file",
+      "sensitivity": "secret",
+      "access": "denied"
+    },
+    {
+      "path": ".gitignore",
+      "type": "file",
+      "sensitivity": "public",
+      "size": 64,
+      "sha256": "7f40ed48848351d3f38d6b9220b8f0bbf4cf5309c148bfffadb1db616671747c"
+    },
+    {
+      "path": "examples/flask-login/.env",
+      "type": "file",
+      "sensitivity": "secret",
+      "access": "denied"
+    },
+    {
+      "path": "examples/flask-login/.env.example",
+      "type": "example",
+      "sensitivity": "public",
+      "size": 93,
+      "sha256": "d5a307d0fa927f127993e189b4b347a5c9dc57ed920546067c6431d2d8efeed5"
+    },
+    {
+      "path": "examples/flask-login/.gitignore",
+      "type": "file",
+      "sensitivity": "public",
+      "size": 74,
+      "sha256": "d21e4c2940ca58baaf1a515af9f50c128585bc1e1ea236e6922e2e4e93dd5520"
+    },
+    {
+      "path": "examples/flask-login/app.py",
+      "type": "python",
+      "sensitivity": "public",
+      "size": 4299,
+      "sha256": "67012bec48e31aa5c96bbc1c662e3157b628ffc48e08ad9ab38b8fb342208f60",
+      "imports": [
+        "__future__",
+        "contextlib",
+        "datetime",
+        "dotenv",
+        "flask",
+        "os",
+        "pathlib",
+        "sqlite3",
+        "werkzeug"
+      ],
+      "routes": [
+        "/",
+        "/about",
+        "/contact",
+        "/dashboard",
+        "/health",
+        "/home",
+        "/login",
+        "/logout",
+        "/portfolio",
+        "/register"
+      ]
+    },
+    {
+      "path": "examples/flask-login/README.md",
+      "type": "markdown",
+      "sensitivity": "public",
+      "size": 405,
+      "sha256": "935818a340d606fe8fc5cdc064919eb641006a26a91e827743802851d884e10a"
+    },
+    {
+      "path": "examples/flask-login/requirements.txt",
+      "type": "txt",
+      "sensitivity": "public",
+      "size": 36,
+      "sha256": "37de8ef8195819041427f5525ad916050944d0ae4ceec7f95e15f03b5de8eac7"
+    },
+    {
+      "path": "examples/flask-login/static/auth.js",
+      "type": "javascript",
+      "sensitivity": "public",
+      "size": 310,
+      "sha256": "6bbfb278f410ff3746f325fd55d54bec7ab6b67dd6d16916c236d76166838cfa"
+    },
+    {
+      "path": "examples/flask-login/static/splash.js",
+      "type": "javascript",
+      "sensitivity": "public",
+      "size": 173,
+      "sha256": "ace96577f33573bb08356848feef95256335f2ef51e3fa100801ac208894b94b"
+    },
+    {
+      "path": "examples/flask-login/static/styles.css",
+      "type": "css",
+      "sensitivity": "public",
+      "size": 3344,
+      "sha256": "dbbf4009931bf19792e588325362a47872f60c79501ad735ffb017ea957b3c8d"
+    },
+    {
+      "path": "examples/flask-login/templates/about.html",
+      "type": "html",
+      "sensitivity": "public",
+      "size": 297,
+      "sha256": "17bc995ad82e6c56e622043dd044921c62a5610c3cb408d68b23274537500af5",
+      "references": [
+        "base.html"
+      ]
+    },
+    {
+      "path": "examples/flask-login/templates/auth_form.html",
+      "type": "html",
+      "sensitivity": "public",
+      "size": 666,
+      "sha256": "7f8989278da4bbba590b1bbbfae8df66ab4440c1a2b3b0ca7134c753746716d0",
+      "references": [
+        "base.html"
+      ]
+    },
+    {
+      "path": "examples/flask-login/templates/base.html",
+      "type": "html",
+      "sensitivity": "public",
+      "size": 987,
+      "sha256": "4bae87dc0b56f93c9d0357e35ff173c940b9380cc4cbc3e18f9e19fb68b55495",
+      "references": [
+        "navbar.html"
+      ]
+    },
+    {
+      "path": "examples/flask-login/templates/contact.html",
+      "type": "html",
+      "sensitivity": "public",
+      "size": 320,
+      "sha256": "6ed90330d94e9340ca9d96310504b1e09904961056f627295cc2825455623df8",
+      "references": [
+        "base.html",
+        "mailto:demo@example.com"
+      ]
+    },
+    {
+      "path": "examples/flask-login/templates/dashboard.html",
+      "type": "html",
+      "sensitivity": "public",
+      "size": 410,
+      "sha256": "f1561471587954f930d08accdf7275a8ac2eed1371d67a15d9da9e19f66906b0",
+      "references": [
+        "base.html"
+      ]
+    },
+    {
+      "path": "examples/flask-login/templates/index.html",
+      "type": "html",
+      "sensitivity": "public",
+      "size": 510,
+      "sha256": "8f16dc156a96d1843d79e338a2f511874aa4ca5c64759b94f18105801a954c53",
+      "references": [
+        "base.html"
+      ]
+    },
+    {
+      "path": "examples/flask-login/templates/login.html",
+      "type": "html",
+      "sensitivity": "public",
+      "size": 369,
+      "sha256": "1a09df7db2225ad359a57cafe311ce334f6443f7c0b55a3d15a9a189f1c75220",
+      "references": [
+        "auth_form.html"
+      ]
+    },
+    {
+      "path": "examples/flask-login/templates/navbar.html",
+      "type": "html",
+      "sensitivity": "public",
+      "size": 860,
+      "sha256": "a66aa35f804c70935859052c0463700b3e194223f74f9f2c33269a738d49e67f",
+      "references": []
+    },
+    {
+      "path": "examples/flask-login/templates/portfolio.html",
+      "type": "html",
+      "sensitivity": "public",
+      "size": 734,
+      "sha256": "5777d5a0e11e645d0a99c4bbd0cffb9c1ef56b17358d26488401fe5573ae4773",
+      "references": [
+        "base.html"
+      ]
+    },
+    {
+      "path": "examples/flask-login/templates/register.html",
+      "type": "html",
+      "sensitivity": "public",
+      "size": 383,
+      "sha256": "8a685b6539dc356daa9b6c7e1de75fe0faf73d22bf472afe5645516a64ea6ba9",
+      "references": [
+        "auth_form.html"
+      ]
+    },
+    {
+      "path": "examples/flask-login/templates/splash.html",
+      "type": "html",
+      "sensitivity": "public",
+      "size": 544,
+      "sha256": "a5ba2c7e9c3d91444cc6a88e70d6788caa62511e0776008b984b09bdbfc933ca",
+      "references": [
+        "base.html"
+      ]
+    },
+    {
+      "path": "examples/flask-login/tests/test_app.py",
+      "type": "python",
+      "sensitivity": "public",
+      "size": 4757,
+      "sha256": "2035230d2f1740f206e1a3116db759a3ad3da1cf3cef7a080a35fe90037dec15",
+      "imports": [
+        "app",
+        "datetime",
+        "pathlib",
+        "sqlite3",
+        "unittest"
+      ],
+      "routes": []
+    },
+    {
+      "path": "harness/__init__.py",
+      "type": "python",
+      "sensitivity": "public",
+      "size": 93,
+      "sha256": "46062a36fe867558315ea07ea24d9bc3f9024b3e862d6cf789d44eb09bac83d4",
+      "imports": [],
+      "routes": []
+    },
+    {
+      "path": "harness/cli.py",
+      "type": "python",
+      "sensitivity": "public",
+      "size": 5047,
+      "sha256": "108be30d939646551a53b0e1e0a4701a96e925341f2250786131abfc0ee68e00",
+      "imports": [
+        "__future__",
+        "argparse",
+        "core",
+        "inventory",
+        "json",
+        "pathlib"
+      ],
+      "routes": []
+    },
+    {
+      "path": "harness/core.py",
+      "type": "python",
+      "sensitivity": "public",
+      "size": 35584,
+      "sha256": "1d55453a224103a5f47074d30b4712e3253fcd0821315977557ac0a7f71628fe",
+      "imports": [
+        "__future__",
+        "concurrent",
+        "dataclasses",
+        "datetime",
+        "fnmatch",
+        "hashlib",
+        "json",
+        "os",
+        "pathlib",
+        "re",
+        "subprocess",
+        "sys",
+        "threading",
+        "typing",
+        "urllib",
+        "uuid",
+        "zoneinfo"
+      ],
+      "routes": []
+    },
+    {
+      "path": "harness/inventory.py",
+      "type": "python",
+      "sensitivity": "public",
+      "size": 5584,
+      "sha256": "4bf896a81578c12380afad761538d5ec704bb4582a678e21ffc955e10588c19b",
+      "imports": [
+        "__future__",
+        "ast",
+        "datetime",
+        "hashlib",
+        "json",
+        "pathlib",
+        "re",
+        "typing"
+      ],
+      "routes": []
+    },
+    {
+      "path": "pyproject.toml",
+      "type": "toml",
+      "sensitivity": "public",
+      "size": 388,
+      "sha256": "8a57ac72ed23d935cd31d69f2c9a4ea9f7370dc2ef236d6202fca36d71c8d880"
+    },
+    {
+      "path": "README.md",
+      "type": "markdown",
+      "sensitivity": "public",
+      "size": 12097,
+      "sha256": "12d3d6ff5b46b13ef09b073f25206766663babbdcb174fba496a50587ec5c360"
+    },
+    {
+      "path": "tests/test_core.py",
+      "type": "python",
+      "sensitivity": "public",
+      "size": 8041,
+      "sha256": "c4d994424e962f7beec5175393c92522af14eeb543a6a10b369e79dafb24e2a8",
+      "imports": [
+        "harness",
+        "tempfile",
+        "unittest"
+      ],
+      "routes": []
+    }
+  ]
+}
