@@ -192,6 +192,18 @@ start task
 
 La pausa è intenzionale: il comando riduce il lavoro manuale, ma non elimina l’approvazione dello sviluppatore. `CTRL+C` lascia il manifest in stato `draft`.
 
+Per eseguire il task in un worktree separato:
+
+```powershell
+python -m harness.cli task pipeline `
+  .coding-harness/plans/<piano>.md `
+  "Task isolato" `
+  --provider codex `
+  --isolated
+```
+
+In modalità isolata l’agente e i test lavorano in `.coding-harness/worktrees/<task>`. Il risultato non viene integrato automaticamente in `main`: il merge controllato è ancora una fase manuale.
+
 ## Complessità e numero di agenti
 
 La complessità viene stabilita nella fase di piano. Non è obbligatorio usare più agenti: si usa il numero minimo necessario.

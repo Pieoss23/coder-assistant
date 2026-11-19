@@ -25,7 +25,7 @@ def main() -> None:
     t = sub.add_parser("task"); ts = t.add_subparsers(dest="action", required=True)
     s = ts.add_parser("start"); s.add_argument("plan", type=Path); s.add_argument("title"); s.add_argument("--provider"); s.add_argument("--test-command"); s.add_argument("--working-directory")
     r = ts.add_parser("run"); r.add_argument("task", type=Path); r.add_argument("--provider")
-    pl = ts.add_parser("pipeline"); pl.add_argument("plan", type=Path); pl.add_argument("title"); pl.add_argument("--provider"); pl.add_argument("--test-command"); pl.add_argument("--working-directory")
+    pl = ts.add_parser("pipeline"); pl.add_argument("plan", type=Path); pl.add_argument("title"); pl.add_argument("--provider"); pl.add_argument("--test-command"); pl.add_argument("--working-directory"); pl.add_argument("--isolated", action="store_true")
     rp = ts.add_parser("run-parallel"); rp.add_argument("tasks", nargs="+", type=Path); rp.add_argument("--provider")
     pr = ts.add_parser("prompt"); pr.add_argument("task", type=Path)
     i = ts.add_parser("import-chat"); i.add_argument("task", type=Path); i.add_argument("output", type=Path)
@@ -51,7 +51,7 @@ def main() -> None:
     elif args.command == "plan" and args.action == "approve": print(f"Approvato: {approve_plan(args.file)}")
     elif args.command == "task" and args.action == "start": print(start_task(args.plan, args.title, args.provider, args.test_command, args.working_directory))
     elif args.command == "task" and args.action == "run": print(run_task(args.task, args.provider).provider)
-    elif args.command == "task" and args.action == "pipeline": print(f"Pipeline completata: {run_pipeline(args.plan, args.title, args.provider, args.test_command, args.working_directory)}")
+    elif args.command == "task" and args.action == "pipeline": print(f"Pipeline completata: {run_pipeline(args.plan, args.title, args.provider, args.test_command, args.working_directory, isolated=args.isolated)}")
     elif args.command == "task" and args.action == "run-parallel": print(run_parallel(args.tasks, args.provider))
     elif args.command == "task" and args.action == "prompt":
         prompt = build_prompt(args.task)

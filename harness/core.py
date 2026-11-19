@@ -18,6 +18,7 @@ from typing import Any
 from zoneinfo import ZoneInfo
 
 from .inventory import build_inventory
+from .workspace import create_worktree
 
 
 ROOT = Path.cwd()
@@ -109,14 +110,25 @@ def session_id() -> str:
     return f"sess-{datetime.fromisoformat(now()).strftime('%Y%m%d%H%M%S')}-{uuid.uuid4().hex[:10]}"
 
 
-def workspace_snapshot() -> dict[str, str]:
+def task_execution_root(task: Path) -> Path:
+    metadata_path = task / "workspace.json"
+    if metadata_path.exists():
+        metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
+        root = Path(metadata["root"]).resolve()
+        if not root.exists():
+            raise FileNotFoundError(f"Workspace isolato non trovato: {root}")
+        return root
+    return ROOT
+
+
+def workspace_snapshot(base: Path = ROOT) -> dict[str, str]:
     ignored = {".coding-harness", "tasks", ".git", ".venv", "__pycache__", "node_modules"}
     result = {}
-    for path in ROOT.rglob("*"):
+    for path in base.rglob("*"):
         if not path.is_file() or any(part in ignored for part in path.parts):
             continue
         try:
-            result[str(path.relative_to(ROOT))] = hashlib.sha256(path.read_bytes()).hexdigest()
+            result[str(path.relative_to(base))] = hashlib.sha256(path.read_bytes()).hexdigest()
         except OSError:
             continue
     return result
@@ -242,7 +254,7 @@ def write_handoff(task: Path, status: dict[str, Any], tests: dict[str, Any] | No
 
 def announce(task: Path, status: dict[str, Any], phase: str) -> None:
     print(f"\n[{status.get('session_id', '?')}] {status.get('identity', status.get('provider', '?'))} | {phase}", flush=True)
-    print(f"  workspace : {ROOT}", flush=True)
+    print(f"  workspace : {status.get('execution_root', ROOT)}", flush=True)
     print(f"  task      : {task}", flush=True)
     print(f"  destinazione: {ROOT}", flush=True)
     print(f"  permesso  : {status.get('permission', 'unknown')} | paths: {', '.join(status.get('paths', ['*']))}", flush=True)
@@ -305,8 +317,9 @@ def terminal_command(command: str) -> list[str]:
 def task_working_directory(task: Path) -> Path:
     status = json.loads((task / "status.json").read_text(encoding="utf-8-sig")) if (task / "status.json").exists() else {}
     configured = status.get("working_directory") or load_config().get("working_directory") or "."
-    candidate = (ROOT / configured).resolve() if not Path(configured).is_absolute() else Path(configured).resolve()
-    if candidate != ROOT.resolve() and ROOT.resolve() not in candidate.parents:
+    execution_root = task_execution_root(task)
+    candidate = (execution_root / configured).resolve() if not Path(configured).is_absolute() else Path(configured).resolve()
+    if candidate != execution_root.resolve() and execution_root.resolve() not in candidate.parents:
         raise ValueError(f"working_directory fuori dal workspace: {configured}")
     if not candidate.exists() or not candidate.is_dir():
         raise FileNotFoundError(f"working_directory non trovato: {candidate}")
@@ -547,11 +560,11 @@ class Provider:
     def __init__(self, name: str, settings: dict[str, Any]):
         self.name, self.settings = name, settings
 
-    def ask(self, prompt: str, on_output=None) -> Result:
+    def ask(self, prompt: str, on_output=None, cwd: Path | None = None) -> Result:
         if self.name == "openrouter":
             return self._openrouter(prompt, on_output)
         if self.name in {"claude", "codex", "copilot"}:
-            return self._cli(prompt, on_output)
+            return self._cli(prompt, on_output, cwd)
         raise ValueError(f"Provider non supportato: {self.name}")
 
     def _openrouter(self, prompt: str, on_output=None) -> Result:
@@ -583,7 +596,7 @@ class Provider:
                         on_output(text)
         return Result("".join(chunks), self.name)
 
-    def _cli(self, prompt: str, on_output=None) -> Result:
+    def _cli(self, prompt: str, on_output=None, cwd: Path | None = None) -> Result:
         command = self.settings.get("command", self.name)
         default_args = ["-p", prompt] if self.name in {"claude", "copilot"} else ["exec", prompt]
         configured_args = self.settings.get("args", default_args)
@@ -592,7 +605,7 @@ class Provider:
         args = [str(item).replace("{prompt}", prompt) for item in configured_args]
         if not via_stdin and "{prompt}" not in " ".join(map(str, configured_args)):
             args.append(prompt)
-        process = subprocess.Popen([command, *args], stdin=subprocess.PIPE if via_stdin else subprocess.DEVNULL, text=True, encoding="utf-8", errors="replace", stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=1)
+        process = subprocess.Popen([command, *args], cwd=str(cwd) if cwd else None, stdin=subprocess.PIPE if via_stdin else subprocess.DEVNULL, text=True, encoding="utf-8", errors="replace", stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=1)
         if via_stdin and process.stdin:
             process.stdin.write(prompt)
             process.stdin.close()
@@ -682,7 +695,7 @@ def start_task(plan: Path, title: str, provider_name: str | None, test_command_v
     return task
 
 
-def run_pipeline(plan: Path, title: str, provider_name: str | None, test_command_value: str | None = None, working_directory: str | None = None, interactive: bool = True) -> Path:
+def run_pipeline(plan: Path, title: str, provider_name: str | None, test_command_value: str | None = None, working_directory: str | None = None, interactive: bool = True, isolated: bool = False) -> Path:
     """Esegue il workflow minimo con gate umano sul manifest sandbox."""
     task = start_task(plan, title, provider_name, test_command_value, working_directory)
     manifest = propose_manifest(task)
@@ -691,6 +704,14 @@ def run_pipeline(plan: Path, title: str, provider_name: str | None, test_command
     if interactive:
         input("Modifica/verifica il manifest, poi premi INVIO per approvarlo e continuare (CTRL+C per fermare): ")
     approve_manifest(task)
+    if isolated:
+        execution_root = create_worktree(ROOT, task, STATE)
+        status_path = task / "status.json"
+        status = json.loads(status_path.read_text(encoding="utf-8-sig"))
+        status["workspace_mode"] = "git-worktree"
+        status["execution_root"] = str(execution_root)
+        status_path.write_text(json.dumps(status, indent=2), encoding="utf-8")
+        print(f"Worktree isolato: {execution_root}", flush=True)
     print("Manifest approvato. Avvio agente e test...", flush=True)
     run_task(task, provider_name)
     return task
@@ -748,7 +769,8 @@ def run_subtask(task: Path, provider_name: str | None) -> Result:
     sid = status.setdefault("session_id", session_id())
     status_path.write_text(json.dumps(status, indent=2), encoding="utf-8")
     announce(task, status, "START / analisi ed esecuzione")
-    before = workspace_snapshot()
+    execution_root = task_execution_root(task)
+    before = workspace_snapshot(execution_root)
     try:
         acquire_ownership(task, scoped_paths, status.get("permission", "modify"), sid)
     except OwnershipBusy as exc:
@@ -759,7 +781,7 @@ def run_subtask(task: Path, provider_name: str | None) -> Result:
     profile = project_agent(provider_name or status.get("provider"), role)
     prompt = read_context() + shared_markdown(task) + f"\n\nLa tua identità è **{profile['identity']}**. Agisci nel ruolo di **{role}** con permesso **{profile['permission']}**. Workspace: `{ROOT}`. Destinazione: `{ROOT}`. " + "Esegui questo sotto-task nel progetto condiviso. Crea ed esegui i test pertinenti:\n\n" + (task / "PLAN.md").read_text(encoding="utf-8")
     try:
-        result = provider(provider_name or status.get("provider") or load_config().get("default_provider")).ask(prompt, on_output=lambda chunk: stream_line(task, chunk))
+        result = provider(provider_name or status.get("provider") or load_config().get("default_provider")).ask(prompt, on_output=lambda chunk: stream_line(task, chunk), cwd=task_execution_root(task))
         (task / "agent-output.md").write_text(result.text, encoding="utf-8")
         refresh_ownership(sid)
         validate_changes(before, workspace_snapshot(), scoped_paths, status.get("permission", "modify"))
@@ -774,7 +796,7 @@ def run_subtask(task: Path, provider_name: str | None) -> Result:
         status.update({"status":"failed", "error":str(exc), "failed_at":now()})
         raise
     finally:
-        write_audit(task, before, workspace_snapshot())
+        write_audit(task, before, workspace_snapshot(execution_root))
         release_ownership(task, sid)
         status_path.write_text(json.dumps(status, indent=2), encoding="utf-8")
 
@@ -789,7 +811,10 @@ def run_task(task: Path, provider_name: str | None) -> Result:
     sid = status.setdefault("session_id", session_id())
     (task / "status.json").write_text(json.dumps(status, indent=2), encoding="utf-8")
     announce(task, status, "START / analisi ed esecuzione")
-    before = workspace_snapshot()
+    execution_root = task_execution_root(task)
+    status["execution_root"] = str(execution_root)
+    (task / "status.json").write_text(json.dumps(status, indent=2), encoding="utf-8")
+    before = workspace_snapshot(execution_root)
     try:
         acquire_ownership(task, scoped_paths, status.get("permission", "modify"), sid)
     except OwnershipBusy as exc:
@@ -799,10 +824,10 @@ def run_task(task: Path, provider_name: str | None) -> Result:
     prompt = read_context() + "\n\nEsegui il piano seguente. Lavora in modo incrementale, annota decisioni e test: \n" + (task / "PLAN.md").read_text(encoding="utf-8")
     event(task, "execution_started", provider=provider_name or status["provider"])
     try:
-        result = provider(provider_name or status["provider"]).ask(prompt, on_output=lambda chunk: stream_line(task, chunk))
+        result = provider(provider_name or status["provider"]).ask(prompt, on_output=lambda chunk: stream_line(task, chunk), cwd=execution_root)
         (task / "agent-output.md").write_text(result.text, encoding="utf-8")
         refresh_ownership(sid)
-        validate_changes(before, workspace_snapshot(), scoped_paths, status.get("permission", "modify"))
+        validate_changes(before, workspace_snapshot(execution_root), scoped_paths, status.get("permission", "modify"))
         test_result = run_tests(task)
         announce(task, status, "TEST / suite automatica")
         final_status = "completed" if test_result["status"] in {"passed", "not-configured"} else "needs-review"
@@ -815,7 +840,7 @@ def run_task(task: Path, provider_name: str | None) -> Result:
         event(task, "execution_failed", error=str(exc))
         raise
     finally:
-        write_audit(task, before, workspace_snapshot())
+        write_audit(task, before, workspace_snapshot(execution_root))
         release_ownership(task, sid)
         (task / "status.json").write_text(json.dumps(status, indent=2), encoding="utf-8")
     return result

@@ -40,7 +40,7 @@ class HarnessTests(unittest.TestCase):
             plan = core.create_plan("Audit demo"); core.approve_plan(plan)
             task = core.start_task(plan, "Audit task", "fake")
             class Fake:
-                def ask(self, prompt, on_output=None):
+                def ask(self, prompt, on_output=None, cwd=None):
                     (root / "created-by-agent.txt").write_text("tracked", encoding="utf-8")
                     return core.Result("Implementazione completata", "fake")
             with patch.object(core, "provider", lambda name: Fake()):
@@ -68,7 +68,7 @@ class HarnessTests(unittest.TestCase):
                 tasks.append(task)
 
             class Fake:
-                def ask(self, prompt, on_output=None): return core.Result("ok", "fake")
+                def ask(self, prompt, on_output=None, cwd=None): return core.Result("ok", "fake")
             with patch.object(core, "provider", lambda name: Fake()):
                 results = core.run_parallel(tasks, "fake")
             self.assertEqual(len(results), 2)
@@ -110,7 +110,7 @@ class HarnessTests(unittest.TestCase):
             status = __import__("json").loads(status_path.read_text(encoding="utf-8")); status["permission"] = "read-only"; status["role"] = "architect"
             status_path.write_text(__import__("json").dumps(status, indent=2), encoding="utf-8")
             class Fake:
-                def ask(self, prompt, on_output=None):
+                def ask(self, prompt, on_output=None, cwd=None):
                     (root / "unauthorized.txt").write_text("blocked", encoding="utf-8")
                     return core.Result("bad", "fake")
             with patch.object(core, "provider", lambda name: Fake()):
@@ -157,7 +157,7 @@ class HarnessTests(unittest.TestCase):
             core.init()
             plan = core.create_plan("Pipeline demo"); core.approve_plan(plan)
             class Fake:
-                def ask(self, prompt, on_output=None): return core.Result("pipeline ok", "fake")
+                def ask(self, prompt, on_output=None, cwd=None): return core.Result("pipeline ok", "fake")
             with patch.object(core, "provider", lambda name: Fake()), patch("builtins.input", return_value=""):
                 task = core.run_pipeline(plan, "Pipeline task", "fake", "python -c \"raise SystemExit(0)\"", ".")
             status = __import__("json").loads((task / "status.json").read_text(encoding="utf-8"))
@@ -221,6 +221,32 @@ class HarnessTests(unittest.TestCase):
         self.assertEqual((root / "app.py").read_text(encoding="utf-8"), "print('base')")
         remove_worktree(root, task, state, force=True)
         self.assertFalse(worktree.exists())
+
+  def test_isolated_pipeline_runs_agent_in_worktree(self):
+    with tempfile.TemporaryDirectory() as directory:
+        root = __import__("pathlib").Path(directory)
+        subprocess.run(["git", "init", "-q"], cwd=root, check=True)
+        subprocess.run(["git", "config", "user.email", "test@example.com"], cwd=root, check=True)
+        subprocess.run(["git", "config", "user.name", "Harness Test"], cwd=root, check=True)
+        (root / "seed.txt").write_text("base", encoding="utf-8")
+        subprocess.run(["git", "add", "seed.txt"], cwd=root, check=True)
+        subprocess.run(["git", "commit", "-qm", "base"], cwd=root, check=True)
+        with patch.object(core, "ROOT", root), patch.object(core, "STATE", root / ".coding-harness"), patch.object(core, "TASKS", root / "tasks"):
+            core.init()
+            plan = core.create_plan("Isolated pipeline")
+            plan.write_text(plan.read_text(encoding="utf-8") + "\n## File coinvolti\n- `isolated-output.txt`\n", encoding="utf-8")
+            core.approve_plan(plan)
+            class Fake:
+                def ask(self, prompt, on_output=None, cwd=None):
+                    __import__("pathlib").Path(cwd, "isolated-output.txt").write_text("worktree", encoding="utf-8")
+                    return core.Result("isolated ok", "fake")
+            with patch.object(core, "provider", lambda name: Fake()), patch("builtins.input", return_value=""):
+                task = core.run_pipeline(plan, "Isolated pipeline task", "fake", "python -c \"raise SystemExit(0)\"", ".", isolated=True)
+            metadata = __import__("json").loads((task / "workspace.json").read_text(encoding="utf-8"))
+            self.assertFalse((root / "isolated-output.txt").exists())
+            self.assertTrue((__import__("pathlib").Path(metadata["root"]) / "isolated-output.txt").exists())
+            self.assertEqual(__import__("json").loads((task / "status.json").read_text(encoding="utf-8"))["status"], "completed")
+            remove_worktree(root, task, root / ".coding-harness", force=True)
 
 
 if __name__ == "__main__":
