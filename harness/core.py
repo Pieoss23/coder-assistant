@@ -437,21 +437,39 @@ def manifest_file(task: Path) -> Path:
     return task / "SANDBOX-MANIFEST.json"
 
 
-def _plan_paths(task: Path, inventory: dict[str, Any]) -> list[str]:
+def _plan_paths(task: Path, inventory: dict[str, Any]) -> dict[str, list[str]]:
     plan = (task / "PLAN.md").read_text(encoding="utf-8", errors="replace")
-    tokens = re.findall(r"`([^`]+)`", plan)
     known = [item["path"] for item in inventory["files"]]
-    selected: set[str] = set()
-    for token in tokens:
-        candidate = token.strip().replace("\\", "/")
-        if not candidate or candidate.startswith("http") or candidate.startswith("<"):
-            continue
-        if candidate.endswith("/"):
-            selected.update(path for path in known if path.startswith(candidate))
-            selected.add(candidate + "*")
-        elif candidate in known:
-            selected.add(candidate)
-    return sorted(selected)
+    sensitive = {item["path"] for item in inventory["files"] if item["sensitivity"] == "secret"}
+    read: set[str] = set()
+    write: set[str] = set()
+    create: set[str] = set()
+    in_files_section = False
+    for line in plan.splitlines():
+        heading = re.match(r"^##\s+(.+)$", line.strip())
+        if heading:
+            in_files_section = "file" in heading.group(1).lower()
+        for token in re.findall(r"`([^`]+)`", line):
+            candidate = token.strip().replace("\\", "/")
+            if not candidate or candidate.startswith("http") or candidate.startswith("<"):
+                continue
+            if candidate.endswith("/"):
+                existing = {path for path in known if path.startswith(candidate) and path not in sensitive}
+                if in_files_section:
+                    write.add(candidate + "*")
+                    read.update(existing)
+                else:
+                    read.update(existing)
+                continue
+            if candidate in sensitive:
+                continue
+            if candidate in known:
+                read.add(candidate)
+                if in_files_section:
+                    write.add(candidate)
+            elif in_files_section:
+                create.add(candidate)
+    return {"read": sorted(read), "write": sorted(write), "create": sorted(create)}
 
 
 def plan_complexity(task: Path) -> dict[str, str]:
@@ -478,9 +496,9 @@ def propose_manifest(task: Path) -> Path:
         "plan_sha256": sha(task / "PLAN.md"),
         "complexity": plan_complexity(task),
         "inventory_generated_at": inventory["generated_at"],
-        "read": paths,
-        "write": paths,
-        "create": [],
+        "read": paths["read"],
+        "write": paths["write"],
+        "create": paths["create"],
         "deny": [".env", "*/.env", ".coding-harness/*", "instance/*", "*.sqlite3"],
         "sensitive": sensitive,
         "commands": [status["test_command"]] if status.get("test_command") else [],

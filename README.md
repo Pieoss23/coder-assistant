@@ -80,7 +80,7 @@ Il manifest descrive il perimetro del task:
 }
 ```
 
-Il manifest è una barriera di policy e viene verificato contro il diff finale. La sandbox preventiva a livello di sistema operativo, con isolamento filesystem/processi/rete, è ancora una funzionalità futura.
+Il manifest distingue i file leggibili, modificabili e creabili. È una barriera di policy e viene verificato contro il diff finale. La sandbox preventiva a livello di sistema operativo, con isolamento filesystem/processi/rete, è ancora una funzionalità futura.
 
 ### Provider
 

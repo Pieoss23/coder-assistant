@@ -186,6 +186,21 @@ class HarnessTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, "Complessità non dichiarata"):
                 core.approve_manifest(task)
 
+  def test_manifest_separates_read_write_and_create_paths(self):
+    with tempfile.TemporaryDirectory() as directory:
+        root = __import__("pathlib").Path(directory)
+        with patch.object(core, "ROOT", root), patch.object(core, "STATE", root / ".coding-harness"), patch.object(core, "TASKS", root / "tasks"):
+            core.init()
+            (root / "app.py").write_text("print('ok')", encoding="utf-8")
+            plan = core.create_plan("Scope demo")
+            plan.write_text(plan.read_text(encoding="utf-8") + "\n## Contesto\n- `app.py`\n\n## File coinvolti\n- `app.py`\n- `templates/new.html`\n", encoding="utf-8")
+            core.approve_plan(plan)
+            task = core.start_task(plan, "Scope task", "fake")
+            manifest = __import__("json").loads(core.propose_manifest(task).read_text(encoding="utf-8"))
+            self.assertEqual(manifest["read"], ["app.py"])
+            self.assertEqual(manifest["write"], ["app.py"])
+            self.assertEqual(manifest["create"], ["templates/new.html"])
+
 
 if __name__ == "__main__":
     unittest.main()
